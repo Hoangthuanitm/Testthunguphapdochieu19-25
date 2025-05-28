@@ -1062,11 +1062,14 @@
 
         // Answer key
         const answerKey = {
-            1: 4, 2: 2, 3: 1, 4: 1, 5: 1, 6: 2, 7: 2, 8: 2, 9: 4, 10: 2,
-            11: 1, 12: 4, 13: 2, 14: 4, 15: 1, 16: 4, 17: 2, 18: 4, 19: 2, 20: 4,
-            21: 3, 22: 3, 23: 3, 24: 4, 25: 1, 26: 4, 27: 3, 28: 4
-        };
-
+    1: "きれいに", 2: "したり", 3: "のった", 4: "みます", 5: "かった", 
+    6: "みんなで", 7: "ぜひ", 8: "に", 9: "はらうことができますか", 10: "を",
+    11: "おかね", 12: "近く", 13: "まで", 14: "の", 15: "ITMセンターの",
+    16: "ぜんぶ", 17: "まえに", 18: "くれました", 19: "あげたい", 20: "チャイン先生からのメールを読みます",
+    21: "服を洗ったり、部屋を掃除したりします", 22: "生まれた日と好きなこと", 23: "韓国でダンスを習います", 
+    24: "かさがなかったから", 25: "かさをはこの中に入れます", 26: "げんきでいたい人は、やさいをたくさん食べましょう", 
+    27: "げんきでいたいわかい男の人は、よくスポーツをします", 28: "2100円"
+};
         const sectionPoints = {
             1: 20, 2: 15, 3: 20, 4: 10, 5: 10, 6: 10, 7: 10, 8: 5
         };
@@ -1129,37 +1132,38 @@
         }
 
         function calculateRadioSectionScore(startQuestion, endQuestion, pointsPerQuestion) {
-            let score = 0;
-            for (let i = startQuestion; i <= endQuestion; i++) {
-                const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
-                if (selectedOption) {
-                    const userAnswer = parseInt(selectedOption.id.split('-')[1]);
-                    if (userAnswer === answerKey[i]) {
-                        score += pointsPerQuestion;
-                    }
-                    showRadioAnswerFeedback(i);
-                }
+    let score = 0;
+    for (let i = startQuestion; i <= endQuestion; i++) {
+        const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selectedOption) {
+            const userAnswer = selectedOption.nextElementSibling.textContent.trim();
+            if (userAnswer === answerKey[i]) {
+                score += pointsPerQuestion;
             }
-            return score;
+            showRadioAnswerFeedback(i);
         }
+    }
+    return score;
+}
 
         function showRadioAnswerFeedback(questionNumber) {
-            const feedbackElement = document.getElementById(`feedback-${questionNumber}`);
-            const selectedOption = document.querySelector(`input[name="q${questionNumber}"]:checked`);
-            if (!selectedOption) {
-                feedbackElement.textContent = 'Bạn chưa chọn đáp án.';
-                feedbackElement.classList.add('wrong');
-                return;
-            }
-            const userAnswer = parseInt(selectedOption.id.split('-')[1]);
-            if (userAnswer === answerKey[questionNumber]) {
-                feedbackElement.textContent = 'Đúng!';
-                feedbackElement.classList.remove('wrong');
-            } else {
-                feedbackElement.textContent = `Sai. Đáp án đúng là: ${answerKey[questionNumber]}`;
-                feedbackElement.classList.add('wrong');
-            }
-        }
+    const feedbackElement = document.getElementById(`feedback-${questionNumber}`);
+    const selectedOption = document.querySelector(`input[name="q${questionNumber}"]:checked`);
+    if (!selectedOption) {
+        feedbackElement.textContent = 'Bạn chưa chọn đáp án.';
+        feedbackElement.classList.add('wrong');
+        return;
+    }
+    const userAnswer = selectedOption.nextElementSibling.textContent.trim();
+    const correctAnswer = answerKey[questionNumber];
+    if (userAnswer === correctAnswer) {
+        feedbackElement.textContent = 'Đúng!';
+        feedbackElement.classList.remove('wrong');
+    } else {
+        feedbackElement.textContent = `Sai. Đáp án đúng là: ${correctAnswer}`;
+        feedbackElement.classList.add('wrong');
+    }
+}
 
         function formatTime(date) {
             return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
